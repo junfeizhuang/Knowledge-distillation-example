@@ -1,0 +1,60 @@
+2019-11-17 17:26:50,023 - root - INFO - --------------Train Prossing--------------
+2019-11-17 17:26:54,165 - root - INFO - Epoch: [1][1/1563] lr : 0.01000 	 Train Loss:2.30994
+2019-11-17 17:26:57,263 - root - INFO - Epoch: [1][201/1563] lr : 0.01000 	 Train Loss:1.95946
+2019-11-17 17:27:00,344 - root - INFO - Epoch: [1][401/1563] lr : 0.01000 	 Train Loss:1.85190
+2019-11-17 17:27:03,437 - root - INFO - Epoch: [1][601/1563] lr : 0.01000 	 Train Loss:1.79056
+2019-11-17 17:27:06,521 - root - INFO - Epoch: [1][801/1563] lr : 0.01000 	 Train Loss:1.74613
+2019-11-17 17:27:09,624 - root - INFO - Epoch: [1][1001/1563] lr : 0.01000 	 Train Loss:1.70946
+2019-11-17 17:27:12,709 - root - INFO - Epoch: [1][1201/1563] lr : 0.01000 	 Train Loss:1.67200
+2019-11-17 17:27:15,937 - root - INFO - Epoch: [1][1401/1563] lr : 0.01000 	 Train Loss:1.64103
+2019-11-17 17:27:18,608 - root - INFO - --------------Evaluate Prossing--------------
+2019-11-17 17:27:18,621 - root - INFO - Epoch: [1][1/313] Val Loss:1.20244	 Accuray:0.531
+2019-11-17 17:27:20,878 - root - INFO - Epoch: [1][201/313] Val Loss:1.23307	 Accuray:0.553
+2019-11-17 17:27:22,197 - root - INFO - --------------Train Prossing--------------
+2019-11-17 17:27:22,218 - root - INFO - Epoch: [2][1/1563] lr : 0.00810 	 Train Loss:1.14663
+2019-11-17 17:27:25,610 - root - INFO - Epoch: [2][201/1563] lr : 0.00810 	 Train Loss:1.33804
+2019-11-17 17:27:28,977 - root - INFO - Epoch: [2][401/1563] lr : 0.00810 	 Train Loss:1.30961
+2019-11-17 17:27:32,257 - root - INFO - Epoch: [2][601/1563] lr : 0.00810 	 Train Loss:1.29419
+2019-11-17 17:27:35,515 - root - INFO - Epoch: [2][801/1563] lr : 0.00810 	 Train Loss:1.28433
+2019-11-17 17:27:38,729 - root - INFO - Epoch: [2][1001/1563] lr : 0.00810 	 Train Loss:1.26827
+2019-11-17 17:27:41,974 - root - INFO - Epoch: [2][1201/1563] lr : 0.00810 	 Train Loss:1.25671
+2019-11-17 17:27:45,193 - root - INFO - Epoch: [2][1401/1563] lr : 0.00810 	 Train Loss:1.24204
+2019-11-17 17:27:47,876 - root - INFO - --------------Evaluate Prossing--------------
+2019-11-17 17:27:47,889 - root - INFO - Epoch: [2][1/313] Val Loss:0.80446	 Accuray:0.688
+2019-11-17 17:27:49,906 - root - INFO - Epoch: [2][201/313] Val Loss:0.99687	 Accuray:0.649
+2019-11-17 17:27:51,045 - root - INFO - --------------Train Prossing--------------
+2019-11-17 17:27:51,068 - root - INFO - Epoch: [3][1/1563] lr : 0.00729 	 Train Loss:1.24549
+2019-11-17 17:27:54,383 - root - INFO - Epoch: [3][201/1563] lr : 0.00729 	 Train Loss:1.11993
+2019-11-17 17:27:58,259 - root - INFO - Epoch: [3][401/1563] lr : 0.00729 	 Train Loss:1.11012
+2019-11-17 17:28:01,510 - root - INFO - Epoch: [3][601/1563] lr : 0.00729 	 Train Loss:1.10094
+2019-11-17 17:28:04,780 - root - INFO - Epoch: [3][801/1563] lr : 0.00729 	 Train Loss:1.09058
+2019-11-17 17:28:08,076 - root - INFO - Epoch: [3][1001/1563] lr : 0.00729 	 Train Loss:1.08296
+2019-11-17 17:28:11,308 - root - INFO - Epoch: [3][1201/1563] lr : 0.00729 	 Train Loss:1.07588
+2019-11-17 17:28:14,601 - root - INFO - Epoch: [3][1401/1563] lr : 0.00729 	 Train Loss:1.06562
+2019-11-17 17:28:17,251 - root - INFO - --------------Evaluate Prossing--------------
+2019-11-17 17:28:17,264 - root - INFO - Epoch: [3][1/313] Val Loss:0.89830	 Accuray:0.656
+2019-11-17 17:28:19,282 - root - INFO - Epoch: [3][201/313] Val Loss:0.89786	 Accuray:0.685
+2019-11-17 17:28:20,433 - root - INFO - --------------Train Prossing--------------
+2019-11-17 17:28:20,455 - root - INFO - Epoch: [4][1/1563] lr : 0.00656 	 Train Loss:1.05937
+2019-11-17 17:28:23,808 - root - INFO - Epoch: [4][201/1563] lr : 0.00656 	 Train Loss:0.98914
+2019-11-17 17:28:27,086 - root - INFO - Epoch: [4][401/1563] lr : 0.00656 	 Train Loss:0.99518
+2019-11-17 17:28:30,343 - root - INFO - Epoch: [4][601/1563] lr : 0.00656 	 Train Loss:0.98302
+2019-11-17 17:28:33,595 - root - INFO - Epoch: [4][801/1563] lr : 0.00656 	 Train Loss:0.97451
+2019-11-17 17:28:36,836 - root - INFO - Epoch: [4][1001/1563] lr : 0.00656 	 Train Loss:0.97176
+2019-11-17 17:28:40,114 - root - INFO - Epoch: [4][1201/1563] lr : 0.00656 	 Train Loss:0.96895
+2019-11-17 17:28:43,347 - root - INFO - Epoch: [4][1401/1563] lr : 0.00656 	 Train Loss:0.96320
+2019-11-17 17:28:45,984 - root - INFO - --------------Evaluate Prossing--------------
+2019-11-17 17:28:45,996 - root - INFO - Epoch: [4][1/313] Val Loss:0.63553	 Accuray:0.812
+2019-11-17 17:28:48,007 - root - INFO - Epoch: [4][201/313] Val Loss:0.85017	 Accuray:0.711
+2019-11-17 17:28:49,147 - root - INFO - --------------Train Prossing--------------
+2019-11-17 17:28:49,169 - root - INFO - Epoch: [5][1/1563] lr : 0.00590 	 Train Loss:0.81753
+2019-11-17 17:28:52,435 - root - INFO - Epoch: [5][201/1563] lr : 0.00590 	 Train Loss:0.92047
+2019-11-17 17:28:55,716 - root - INFO - Epoch: [5][401/1563] lr : 0.00590 	 Train Loss:0.90305
+2019-11-17 17:28:58,964 - root - INFO - Epoch: [5][601/1563] lr : 0.00590 	 Train Loss:0.90190
+2019-11-17 17:29:02,185 - root - INFO - Epoch: [5][801/1563] lr : 0.00590 	 Train Loss:0.90055
+2019-11-17 17:29:05,410 - root - INFO - Epoch: [5][1001/1563] lr : 0.00590 	 Train Loss:0.89629
+2019-11-17 17:29:08,656 - root - INFO - Epoch: [5][1201/1563] lr : 0.00590 	 Train Loss:0.89593
+2019-11-17 17:29:11,910 - root - INFO - Epoch: [5][1401/1563] lr : 0.00590 	 Train Loss:0.89101
+2019-11-17 17:29:14,589 - root - INFO - --------------Evaluate Prossing--------------
+2019-11-17 17:29:14,600 - root - INFO - Epoch: [5][1/313] Val Loss:0.53392	 Accuray:0.812
+2019-11-17 17:29:16,596 - root - INFO - Epoch: [5][201/313] Val Loss:0.73073	 Accuray:0.741

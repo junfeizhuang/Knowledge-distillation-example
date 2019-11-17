@@ -1,0 +1,22 @@
+class config:
+	batch_size = 128
+	gpu_id = 1
+	num_workers = 12
+	learning_rate = 0.01
+	momentum = 0.9
+	weight_decay = 5e-4
+	start_epoch = 0
+	end_epoch = 50
+	print_freq = 200
+	scheduler_name = 'exp'
+	model_save_path = 'checkpoints'
+	restore_pth_path = '/home/zhuangjunfei/mycode/knowlege_distillation_mine/checkpoints/student_2.pth'
+	use_restore_model = False
+	log_save_path = './logs'
+	writer_path = './logs'
+	arch = 'student_kd'
+	alpha = 0.9
+	temperature = 20
+	attention_lambda=50
+	dml_lamdba = 1
+	teacher_path = '/home/zhuangjunfei/mycode/knowlege_distillation_mine/checkpoints/teacher_model_best.pth'
