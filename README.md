@@ -23,7 +23,7 @@ python train.py -m student -gpu 1
 
 ## Result
 
-表头  | 表头  | 表头
+Raw ResNet20  | Raw ResNet56  | KD | AT | DML
 ---- | ----- | ------ 
 单元格内容  | 单元格内容 | 单元格内容
 单元格内容  | 单元格内容 | 单元格内容 
