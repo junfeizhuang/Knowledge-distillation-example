@@ -13,6 +13,10 @@ For KD and AT, ResNet18 is student network and ResNet101 is teacher Network.
 
 For DMP, two student networks are ResNet18.
 
+## Train
+```Script
+python train.py -m student -gpu 1
+```
 ## Dataset
 
 [Cifar10](http://www.cs.toronto.edu/~kriz/cifar.html)
@@ -20,5 +24,4 @@ For DMP, two student networks are ResNet18.
 ## Result
 Raw ResNet18  | Raw ResNet101 | KD | AT | DMP
 --------- | --------| --------- | --------| --------- | 
-  |  |  |  |  |  
-   |  |  |  |  |  
+          |         |           |         |           |  
