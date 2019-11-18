@@ -55,9 +55,24 @@ def create_tb_writer(tb_filename):
     summary_writer = SummaryWriter(tb_filename)
     return summary_writer
 
-def calculate_accuracy(outputs, labels):
-    outputs = np.argmax(outputs, axis=1)
-    return np.sum(outputs==labels)/float(labels.size)
+# def calculate_accuracy(outputs, labels):
+#     outputs = np.argmax(outputs, axis=1)
+#     return np.sum(outputs==labels)/float(labels.size)
+
+def calculate_accuracy(output, target, topk=(1,)):
+    """Computes the precision@k for the specified values of k"""
+    maxk = max(topk)
+    batch_size = target.size(0)
+
+    _, pred = output.topk(maxk, 1, True, True)
+    pred    = pred.t()
+    correct = pred.eq(target.view(1, -1).expand_as(pred))
+
+    res = []
+    for k in topk:
+        correct_k = correct[:k].view(-1).float().sum(0)
+        res.append(correct_k.mul_(100.0 / batch_size))
+    return res
 
 def save_model(model, epoch, optimizer, model_name, save_model_path, is_best=False):
     model_save_folder = Path(Path().resolve(),save_model_path)

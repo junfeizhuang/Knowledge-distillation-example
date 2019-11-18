@@ -1,5 +1,6 @@
 import os
 import torch
+import argparse
 import numpy as np
 import torchvision
 import torchvision.transforms as transforms
@@ -15,7 +16,7 @@ from torch.optim.lr_scheduler import StepLR, ExponentialLR, CosineAnnealingLR
 from config import config
 from utils import *
 from model.models import *
-from model.loss import CE_loss_fn, KD_loss_fn
+from model.loss import *
 
 np.random.seed(12345)
 torch.manual_seed(12345)
@@ -23,7 +24,7 @@ torch.cuda.manual_seed(12345)
 
 def obtain_lr_scheduler(scheduler_name, optimizer, last_epoch):
     if scheduler_name == 'step':
-        scheduler = StepLR(optimizer, step_size=20, gamma=0.8, last_epoch=last_epoch)
+        scheduler = StepLR(optimizer, step_size=10, gamma=0.8, last_epoch=last_epoch)
     elif scheduler_name == 'exp':
         scheduler = ExponentialLR(optimizer,gamma=0.9,last_epoch=last_epoch)
     elif scheduler_name == 'cos':
@@ -37,8 +38,9 @@ def train_dml(dataloader, student1_model, student2_model, epoch, \
                 logger,summary_writer, cfg):
     student1_model.train()
     student2_model.train()
-    losses = AverageMeter()
-    logger.info('--------------Train KD Prossing--------------')
+    losses1 = AverageMeter()
+    losses2 = AverageMeter()
+    logger.info('--------------Train DML Prossing--------------')
     with torch.cuda.device(cfg.gpu_id):
         student1_model.cuda()
         student2_model.cuda()
@@ -49,29 +51,39 @@ def train_dml(dataloader, student1_model, student2_model, epoch, \
             student2_output, _, _, _ = student2_model(data)
 
             loss1 = DML_loss_fn(student1_output, student2_output, label, cfg)
-            loss2 = DML_loss_fn(student2_output, student1_output, label, cfg)
+            
         
             optimizer1.zero_grad()
             loss1.backward()
             optimizer1.step()
+            losses1.update(loss1.item(), data.size(0))
+
+            student1_output, _, _, _ = student1_model(data)
+            student2_output, _, _, _ = student2_model(data)
+            loss2 = DML_loss_fn(student2_output, student1_output, label, cfg)
+            
             optimizer2.zero_grad()
             loss2.backward()
             optimizer2.step()
-            step = epoch * len(dataloader) + idx
-            summary_writer.add_scalar('train/loss', loss.data, step)
-            cur_lr = lr_scheduler.get_lr()[0]
-            if idx % cfg.print_freq == 0:
-                logger.info('Epoch: [{0}][{1}/{2}] lr : {lr:.5f} \t Train Loss:{loss.avg:.5f}'.format(
-                epoch + 1, idx + 1, len(dataloader), lr=cur_lr, loss=losses))
+            losses2.update(loss2.item(), data.size(0))
 
-        lr_scheduler.step()
-    return student1_model, student2_model, optimizer1, optimizer2, lr_scheduler1
+            step = epoch * len(dataloader) + idx
+            summary_writer.add_scalar('train/loss1', loss1.data, step)
+            summary_writer.add_scalar('train/loss2', loss2.data, step)
+            cur_lr = lr_scheduler1.get_lr()[0]
+            if idx % cfg.print_freq == 0:
+                logger.info('Epoch: [{0}][{1}/{2}] lr : {lr:.5f} \t Train Loss1:{loss1.avg:.5f}\t Train Loss2:{loss2.avg:.5f}'.format(
+                epoch + 1, idx + 1, len(dataloader), lr=cur_lr, loss1=losses1, loss2=losses2))
+
+        lr_scheduler1.step()
+        lr_scheduler2.step()
+    return student1_model, student2_model, optimizer1, optimizer2, lr_scheduler1, lr_scheduler2
 
 def train_at(dataloader, student_model, teacher_model, epoch, optimizer, lr_scheduler, logger,summary_writer, cfg):
     student_model.train()
     teacher_model.eval()
     losses = AverageMeter()
-    logger.info('--------------Train KD Prossing--------------')
+    logger.info('--------------Train AT Prossing--------------')
     with torch.cuda.device(cfg.gpu_id):
         student_model.cuda()
         teacher_model.cuda()
@@ -87,8 +99,8 @@ def train_at(dataloader, student_model, teacher_model, epoch, optimizer, lr_sche
             loss3 = MSE_loss_fn(s_atmp3, t_atmp3)
 
             loss = KD_loss_fn(student_output, label, teacher_output, cfg)
-            loss = loss + (loss1 + loss2 + loss3) * cfg.attention_lambda
-            loss = torch.mean(loss)
+            loss += loss1 + loss2 + loss3
+            losses.update(loss.item(), data.size(0))
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -116,12 +128,11 @@ def train_kd(dataloader, student_model, teacher_model, epoch, optimizer, lr_sche
             data, label = Variable(data), Variable(label)
             student_output, _, _, _ = student_model(data)
             teacher_output, _, _, _ = teacher_model(data)
-
             loss = KD_loss_fn(student_output, label, teacher_output, cfg)
-            loss = torch.mean(loss)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            losses.update(loss.item(), data.size(0))
             step = epoch * len(dataloader) + idx
             summary_writer.add_scalar('train/loss', loss.data, step)
             cur_lr = lr_scheduler.get_lr()[0]
@@ -144,7 +155,6 @@ def train(dataloader, model, epoch, optimizer, lr_scheduler, logger,summary_writ
             data, label = Variable(data), Variable(label)
             output, _, _, _ = model(data)
             loss = CE_loss_fn(output, label)
-            loss = torch.mean(loss)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -175,9 +185,8 @@ def eval(dataloader, model, epoch, logger,summary_writer, cfg):
                 data, label = Variable(data), Variable(label)
                 output, _, _, _ = model(data)
                 loss = CE_loss_fn(output, label)
-                accuray = calculate_accuracy(output.cpu().detach().numpy(), label.cpu().detach().numpy())
+                accuray = calculate_accuracy(output.data, label)[0]
                 accuracys.update(accuray)
-                loss = torch.mean(loss)
                 losses.update(loss, data.size(0))
                 step = epoch * len(dataloader) + idx
                 summary_writer.add_scalar('val/loss', loss.data, step)
@@ -224,9 +233,9 @@ def main(cfg):
 
     with torch.cuda.device(cfg.gpu_id):
         if 'student' in cfg.arch:
-            model = ResNet18().cuda()
+            model = ResNet20().cuda()
         elif cfg.arch == 'teacher':
-            model = ResNet101().cuda()
+            model = ResNet56().cuda()
 
     accuray_max = 0
     is_best = False
@@ -245,35 +254,41 @@ def main(cfg):
 
     for epoch in range(cfg.start_epoch,cfg.end_epoch):
 
-        if 'kd' in cfg.arch:
+        if 'student_kd' == cfg.arch:
             student_model = model
-            teacher_model = ResNet101().cuda()
+            teacher_model = ResNet56().cuda()
             ckpt = torch.load(cfg.teacher_path, map_location = lambda storage, loc: storage.cuda(cfg.gpu_id))
             teacher_model.load_state_dict(ckpt)
             model, optimizer, lr_scheduler = train_kd(trainloader,student_model, teacher_model, epoch, \
                                             optimizer, lr_scheduler, logger, summary_writer, cfg)
-        elif 'at' in cfg.arch:
+        elif 'student_at' == cfg.arch:
             student_model = model
-            teacher_model = ResNet101().cuda()
+            teacher_model = ResNet56().cuda()
             ckpt = torch.load(cfg.teacher_path, map_location = lambda storage, loc: storage.cuda(cfg.gpu_id))
             teacher_model.load_state_dict(ckpt)
             model, optimizer, lr_scheduler = train_at(trainloader,student_model, teacher_model, epoch, \
                                             optimizer, lr_scheduler, logger, summary_writer, cfg)
-        elif 'dml' in cfg.arch:
+        elif 'student_dml' == cfg.arch:
             student1_model = model
-            student2_model = ResNet18().cuda()
+            student2_model = ResNet20().cuda()
+            optimizer1 = optimizer
             optimizer2 = optim.SGD(student2_model.parameters(), lr=cfg.learning_rate,
                 momentum=cfg.momentum, weight_decay=cfg.weight_decay)
+            lr_scheduler1 = lr_scheduler
             lr_scheduler2 = obtain_lr_scheduler(cfg.scheduler_name,optimizer2, -1)
-            student1_model, student2_model, optimizer1, optimizer2, lr_scheduler1 = \
+            student1_model, student2_model, optimizer1, optimizer2, lr_scheduler1, lr_scheduler2 = \
                 train_dml(trainloader, student1_model, student2_model, epoch, \
                     optimizer1, optimizer2, lr_scheduler1, lr_scheduler2, \
                     logger,summary_writer, cfg)
             model = student1_model
+            optimizer = optimizer1
+            lr_scheduler = lr_scheduler1
 
-        else:
+        elif 'student' == cfg.arch or 'teacher' == cfg.arch:
             model, optimizer, lr_scheduler = train(trainloader,model, epoch, \
                                             optimizer, lr_scheduler, logger,summary_writer, cfg)
+        else:
+            raise ValueError('{} is not proper'.format(cfg.arch))
 
         accuracy = eval(testloader, model, epoch, logger,summary_writer, cfg)
         if accuracy > accuray_max: 
@@ -282,12 +297,15 @@ def main(cfg):
         else:
             is_best = False
         save_model(model, epoch, optimizer, cfg.arch, cfg.model_save_path,is_best=is_best)
+    logger.info('accuray_max: {:.3f}'.format(accuray_max))
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-m','--model_type', type=str, default='', help='student, teacher, student_kd, student_at, or student_dml')
+    parser.add_argument('-gpu','--gpu_id', type=int, default=1, help='models and logs are saved here')
+    args = parser.parse_args()
     cfg = config()
-    setattr(cfg,'arch','student')
+    setattr(cfg,'arch',args.model_type)
+    setattr(cfg,'gpu_id',args.gpu_id)
     main(cfg)
-    # setattr(cfg,'arch','teacher')
-    # main(cfg)
-    # setattr(cfg,'arch','student_kd')
-    # main(cfg)
+
