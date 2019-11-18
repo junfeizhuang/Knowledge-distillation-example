@@ -22,10 +22,6 @@ python train.py -m student -gpu 1
 [Cifar10](http://www.cs.toronto.edu/~kriz/cifar.html)
 
 ## Result
-| 表头1  | 表头2|
-| ---------- | -----------|
-| 表格单元   | 表格单元   |
-| 表格单元   | 表格单元   |
 |Raw ResNet20 | Raw ResNet56| KD| AT| DML|
 |--------- | --------- | --------| --------- | -------- | --------- | 
 |Top-1     | 91.030    | 92.257  | 91.723    |          | 91.574    | 
