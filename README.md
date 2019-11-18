@@ -25,4 +25,4 @@ python train.py -m student -gpu 1
 
   metric   |Raw ResNet20  | Raw ResNet56  | KD | AT | DML
  ---- | ----- | ------ | ------- | --------  | ---------
-Top-1   | 91.030    | 92.257  | 91.723    |  x  | 91.574 
+Top-1   | 91.030    | 92.257  | 91.723    |  91.822  | 91.574 
